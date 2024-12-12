@@ -1,0 +1,96 @@
+﻿@model List<Cinema>
+<link rel="stylesheet" href="~/css/mycinema.css" />
+
+<div class="main_page col-12">
+    <div class="page_used_area col-10">
+        <h3 class="col-12">Cinema</h3>
+        <div class="table_area col-12">
+            <a asp-action="Create" class="btn_create"><i class="bi bi-plus-circle"></i> Create</a>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Cinema Name</th>
+                        <th scope="col">Cinema Description</th>
+                        <th scope="col">Cinema Address</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>@item.Description</td>
+                            <td>@item.Address</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="a_edit"><i class="bi bi-box-arrow-in-down-left i_edit"></i> Edit</a>
+                                <a href="#" data-id="@item.Id" data-name="@item.Name" class="a_delete"><i class="bi bi-trash i_delete"></i> Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="fixed_page hide col-12">
+    <div class="del_box">
+        <div class="upper_box col-12">
+            <h4 class="h4_upper">Confirm delete</h4>
+            <i class="bi bi-x-lg i_upper"></i>
+        </div>
+        <div class="mid_box col-12"></div>
+        <div class="lower_box">
+            <p>Are you sure that you want to delete Cinema <strong></strong> ?</p>
+            <div class="lower_btn">
+                <a href="" class="a_lower">Delete</a>
+                <button class="btn_lower">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const a_delete = document.querySelectorAll(".a_delete");
+        const fixed_page = document.querySelector(".fixed_page");
+        const a_lower = document.querySelector(".a_lower");
+        const del_box = document.querySelector(".del_box");
+        const i_upper = document.querySelector(".i_upper");
+        const btn_lower = document.querySelector(".btn_lower");
+        const strong = document.querySelector("strong");
+
+        a_delete.forEach(btn => {
+            btn.onclick = function () {
+                const CinemaId = this.getAttribute("data-id");
+                const name = this.getAttribute("data-name");
+                strong.textContent = name;
+                fixed_page.classList.remove("hide");
+                fixed_page.classList.add("appear");
+                del_box.classList.add("animate__animated", "animate__fadeInDownBig", "animate__fast");
+                a_lower.setAttribute("href", `/AllCinema/Delete/${CinemaId}`);
+            };
+        });
+        del_box.onclick = function (e) {
+            e.stopPropagation();
+        };
+        i_upper.onclick = function (e) {
+            fixed_page.classList.remove("appear");
+            fixed_page.classList.add("hide");
+        };
+        btn_lower.onclick = function () {
+            fixed_page.classList.remove("appear");
+            fixed_page.classList.add("hide");
+        };
+        fixed_page.onclick = function () {
+            fixed_page.classList.remove("appear");
+            fixed_page.classList.add("hide");
+        };
+        var success = '@TempData["CSuccess"]';
+        if (success !== '') {
+            toastr.success(success, { timeOut: 5000 });
+        }
+    </script>
+}
